@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphVision Security</title>
+  
+  <!-- GraphVision Custom Logo Favicon -->
+  <link rel="icon" type="image/png" href="/static/logo.png">
+
+  <!-- Aesthetic Typography: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- React 18 & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone (Compiles JSX in browser) -->
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Fallback loader for React & Babel in case unpkg is delayed or restricted -->
+  <script>
+    if (!window.React) {
+      document.write('<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"><\/script>');
+    }
+    if (!window.ReactDOM) {
+      document.write('<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"><\/script>');
+    }
+    if (!window.Babel) {
+      document.write('<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"><\/script>');
+    }
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Soothing Ambient Color Shed (Gentle pastel aurora gradient wash) */
+    body {
+      background-color: #F8FAFC;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(224, 231, 255, 0.7) 0px, transparent 45%),
+        radial-gradient(at 100% 0%, rgba(224, 242, 254, 0.55) 0px, transparent 40%),
+        radial-gradient(at 50% 10%, rgba(238, 242, 255, 0.5) 0px, transparent 45%),
+        radial-gradient(at 100% 50%, rgba(254, 242, 242, 0.35) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(240, 253, 250, 0.55) 0px, transparent 60%);
+      background-attachment: fixed;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+
+    /* Animated Brand Title (Shimmering metallic glow) */
+    @keyframes gv-shimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes gv-glow {
+      0%, 100% {
+        filter: drop-shadow(0 0 1px rgba(79, 70, 229, 0.15));
+      }
+      50% {
+        filter: drop-shadow(0 0 7px rgba(99, 102, 241, 0.38));
+      }
+    }
+
+    .gv-brand-title {
+      background: linear-gradient(
+        125deg,
+        #0F172A 0%,
+        #312E81 22%,
+        #4F46E5 45%,
+        #0284C7 68%,
+        #0F172A 95%
+      );
+      background-size: 250% 250%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gv-shimmer 7s ease-in-out infinite, gv-glow 4s ease-in-out infinite;
+      letter-spacing: -0.025em;
+      display: inline-block;
+      font-weight: 800;
+      transition: filter 0.3s ease;
+    }
+    .gv-brand-title:hover {
+      animation-duration: 3s, 2s;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(241, 245, 249, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+
+    @keyframes gv-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Distinct Ring Switcher Animations */
+    @keyframes ring1-bloom {
+      0% {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+      60% {
+        transform: scale(1.015);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes ring2-cascade {
+      0% {
+        opacity: 0;
+        transform: translateY(-18px) scale(0.96);
+      }
+      60% {
+        transform: translateY(4px) scale(1.01);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .animate-ring1 {
+      animation: ring1-bloom 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .animate-ring2 {
+      animation: ring2-cascade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes pulse-banner {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.85; }
+    }
+    .attack-alert-pulse {
+      animation: pulse-banner 1.2s infinite ease-in-out;
+    }
+
+    .target-highlight {
+      outline: 2px solid #6366F1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-900">
+  <div id="root">
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#F8FAFC;">
+      <div style="text-align:center;padding:32px;background:white;border-radius:16px;border:1px solid #E2E8F0;box-shadow:0 1px 3px rgba(0,0,0,0.05);max-width:360px;">
+        <div style="width:36px;height:36px;border:3px solid #E2E8F0;border-top-color:#4F46E5;border-radius:50%;animation:gv-spin 0.8s linear infinite;margin:0 auto 16px auto;"></div>
+        <h2 style="font-size:15px;font-weight:700;color:#0F172A;margin-bottom:4px;">GraphVision Security</h2>
+        <p style="font-size:12px;color:#64748B;">Connecting to stream defense engine...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('error', function(e) {
+      console.error('[GraphVision Error Handler]', e);
+      var root = document.getElementById('root');
+      if (root && root.innerText.indexOf('Connecting to stream defense engine') !== -1) {
+        root.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#FFF1F2;padding:24px;"><div style="background:white;border:1px solid #FECDD3;border-radius:12px;padding:24px;max-width:500px;text-align:center;"><h2 style="color:#E11D48;font-size:16px;font-weight:700;margin-bottom:8px;">GraphVision Defense Notice</h2><p style="color:#475569;font-size:13px;margin-bottom:12px;">' + (e.message || 'Script compilation in progress') + '</p><button onclick="location.reload()" style="background:#4F46E5;color:white;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer;">Reload Dashboard</button></div></div>';
+      }
+    });
+  </script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo } = React;
+
+    // Fixed Deterministic Geometry for Ring 1 (23 Users)
+    const RING1_ANCHORS = [
+      { id: "dev_smg9600", label: "Dev: Galaxy S9 Rooted", type: "device", color: "#9333EA", x: 230, y: 125 },
+      { id: "dev_tor", label: "Dev: Tor Windows", type: "device", color: "#9333EA", x: 450, y: 125 },
+      { id: "card_13844", label: "Shared Card #13844", type: "card", color: "#0284C7", x: 340, y: 170 },
+      { id: "id20_507", label: "Shared ID20 #507", type: "id20", color: "#059669", x: 245, y: 215 },
+      { id: "id20_344", label: "Shared ID20 #344", type: "id20", color: "#059669", x: 435, y: 215 }
+    ];
+
+    const RING1_ACTOR_POS = [
+      // 8 Repeated Fraudsters (Lower arc, wide spacing, 100% fixed)
+      { x: 135, y: 275 }, { x: 195, y: 285 }, { x: 255, y: 292 }, { x: 315, y: 296 },
+      { x: 375, y: 296 }, { x: 435, y: 292 }, { x: 495, y: 285 }, { x: 555, y: 275 },
+      // 15 Connected Mules (Upper horseshoe arc, wide spacing, 100% fixed)
+      { x: 80,  y: 220 }, { x: 75,  y: 165 }, { x: 90,  y: 110 }, { x: 125, y: 65  },
+      { x: 175, y: 40  }, { x: 235, y: 30  }, { x: 300, y: 25  }, { x: 370, y: 25  },
+      { x: 435, y: 30  }, { x: 495, y: 40  }, { x: 545, y: 65  }, { x: 580, y: 110 },
+      { x: 595, y: 165 }, { x: 590, y: 220 }, { x: 610, y: 270 }
+    ];
+
+    // Fixed Deterministic Geometry for Ring 2 (Emulator Device Hijack - 17 Users)
+    const RING2_ANCHORS = [
+      { id: "dev_pixel4", label: "Dev: Pixel 4 Emulator (Rooted)", type: "device", color: "#9333EA", x: 340, y: 115 },
+      { id: "card_10486", label: "Shared Card #10486", type: "card", color: "#0284C7", x: 235, y: 180 },
+      { id: "id20_507", label: "Shared ID20 #507", type: "id20", color: "#059669", x: 445, y: 180 }
+    ];
+
+    const RING2_ACTOR_POS = [
+      // 5 Repeated Fraudsters in central pyramid below emulator
+      { x: 265, y: 250 }, { x: 340, y: 255 }, { x: 415, y: 250 },
+      { x: 300, y: 300 }, { x: 380, y: 300 },
+      // 12 Connected Mules in lateral clusters
+      { x: 95,  y: 90  }, { x: 120, y: 145 }, { x: 90,  y: 205 }, { x: 130, y: 265 },
+      { x: 180, y: 295 }, { x: 170, y: 80  }, { x: 505, y: 80  }, { x: 545, y: 90  },
+      { x: 520, y: 145 }, { x: 550, y: 205 }, { x: 510, y: 265 }, { x: 460, y: 295 }
+    ];
+
+    // Stacked Risk Data (Exact match for Reference Pic 2)
+    const HISTORICAL_RISK_DATA = [
+      { date: "Dec 21", highPct: 66.7, medPct: 33.3, highCount: 16, medCount: 8, total: 24 },
+      { date: "Dec 22", highPct: 83.3, medPct: 16.7, highCount: 20, medCount: 4, total: 24 },
+      { date: "Dec 23", highPct: 100.0, medPct: 0.0, highCount: 28, medCount: 0, total: 28 },
+      { date: "Dec 25", highPct: 0.0, medPct: 100.0, highCount: 0, medCount: 22, total: 22 },
+      { date: "Dec 28", highPct: 0.0, medPct: 100.0, highCount: 0, medCount: 19, total: 19 },
+      { date: "Dec 29", highPct: 33.3, medPct: 66.7, highCount: 9, medCount: 18, total: 27 },
+      { date: "Dec 30", highPct: 0.0, medPct: 100.0, highCount: 0, medCount: 25, total: 25 }
+    ];
+
+    function App() {
+      const [wsConnected, setWsConnected] = useState(false);
+      const [isPlaying, setIsPlaying] = useState(false);
+
+      // KPI Stats
+      const [kpi, setKpi] = useState({
+        total_streamed: 40,
+        fraud_pct: 3.42,
+        current_date: "Dec 22"
+      });
+
+      // Feeds
+      const [transactions, setTransactions] = useState([]);
+      const [tickerPoints, setTickerPoints] = useState([]);
+
+      // Time Travel / History Scrubber State (< and > buttons)
+      const [historyOffset, setHistoryOffset] = useState(0); // 0 = Live Feed; > 0 = points back in time
+
+      // Ring State Management (FIXED: selectedRingId prevents Ring 2 reverting to Ring 1)
+      const [activeRings, setActiveRings] = useState([]);
+      const [selectedRingId, setSelectedRingId] = useState('Ring 1');
+      const [selectedActor, setSelectedActor] = useState(null);
+      const [showRingSelector, setShowRingSelector] = useState(false); // Collapsed by default
+      const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false); // Pop-out modal
+
+      // Attack Banner visibility: ONLY visible when user clicks red peak dot
+      const [showAttackBanner, setShowAttackBanner] = useState(false);
+      const [bannerDismissed, setBannerDismissed] = useState(false);
+
+      // Subnav Active Tab
+      const [activeNavTab, setActiveNavTab] = useState('Overview');
+      const [transactionFilter, setTransactionFilter] = useState('ALL');
+
+      // Hovered Bar Tooltip State for Pic 2 Stacked Chart
+      const [hoveredBar, setHoveredBar] = useState(null);
+
+      // Blocked Actors Set (Diagnostic Mode)
+      const [blockedActors, setBlockedActors] = useState(new Set());
+      const [actionToast, setActionToast] = useState(null);
+
+      const wsRef = useRef(null);
+      const tickerCanvasRef = useRef(null);
+      const redDotsRef = useRef([]);
+
+      // Derive selected ring safely
+      const selectedRing = useMemo(() => {
+        if (!activeRings || activeRings.length === 0) return null;
+        return activeRings.find(r => r.ring_id === selectedRingId) || activeRings[0];
+      }, [activeRings, selectedRingId]);
+
+      // 1. WebSocket Connection & Immediate Timeline Pre-Seed
+      useEffect(() => {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws/stream`;
+        const ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
+          setWsConnected(true);
+          console.log("[WebSocket] Connected to GraphVision Security Stream.");
+        };
+
+        ws.onclose = () => setWsConnected(false);
+
+        ws.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+
+          if (msg.type === 'INIT_STATE') {
+            if (msg.active_rings && msg.active_rings.length > 0) {
+              setActiveRings(msg.active_rings);
+            }
+            if (msg.stats) {
+              setKpi(prev => ({
+                ...prev,
+                total_streamed: msg.stats.total_processed || 40,
+                fraud_pct: 3.42
+              }));
+            }
+            // Pre-populate tickerPoints with server pre-seeded timeline points!
+            if (msg.timeline && msg.timeline.length > 0) {
+              const pts = msg.timeline.map((pt, idx) => {
+                const dayOffset = Math.floor((pt.timestamp || 0) / 86400);
+                const simDay = 21 + (dayOffset % 10);
+                const isSpike = pt.is_spike || pt.risk_score >= 0.70;
+                return {
+                  date: `Dec ${simDay}`,
+                  dt: pt.timestamp,
+                  val: pt.risk_score,
+                  is_spike: isSpike,
+                  tx_id: pt.tx_id,
+                  card1: isSpike ? (idx % 2 === 0 ? 13844 : 10486) : 9500
+                };
+              });
+              setTickerPoints(pts);
+            }
+          } else if (msg.type === 'TRANSACTION_EVENT') {
+            const tx = msg.transaction;
+            const stats = msg.stats;
+            const analytics = msg.analytics;
+
+            if (msg.active_rings && msg.active_rings.length > 0) {
+              setActiveRings(msg.active_rings);
+            }
+
+            const dayOffset = Math.floor((tx.TransactionDT || 0) / 86400);
+            const simDay = 21 + (dayOffset % 10);
+            const currentDateStr = `Dec ${simDay}`;
+
+            if (stats) {
+              setKpi({
+                total_streamed: stats.total_processed,
+                fraud_pct: analytics?.fraud_rate || 3.42,
+                current_date: currentDateStr
+              });
+            }
+
+            // Append transaction to live feed (keep 35)
+            setTransactions(prev => [tx, ...prev.slice(0, 34)]);
+
+            // Append to ticker history (keep up to 300 points for rich historical scrubbing)
+            const isSpike = tx.velocity?.is_spike || tx.risk_score >= 0.70;
+            setTickerPoints(prev => [
+              ...prev.slice(-250),
+              {
+                date: currentDateStr,
+                dt: tx.TransactionDT,
+                val: tx.risk_score,
+                is_spike: isSpike,
+                tx_id: tx.TransactionID,
+                card1: tx.card1
+              }
+            ]);
+          } else if (msg.type === 'RESET_STATE') {
+            setTransactions([]);
+            setTickerPoints([]);
+            setHistoryOffset(0);
+            setShowAttackBanner(false);
+            setSelectedActor(null);
+          }
+        };
+
+        return () => ws.close();
+      }, []);
+
+      // Visible Window of Points (Supports Time Travel Scrubber)
+      const WINDOW_SIZE = 55;
+      const isLive = historyOffset === 0;
+
+      const visiblePoints = useMemo(() => {
+        if (tickerPoints.length <= WINDOW_SIZE) return tickerPoints;
+        const end = tickerPoints.length - historyOffset;
+        const start = Math.max(0, end - WINDOW_SIZE);
+        return tickerPoints.slice(start, Math.max(start + 1, end));
+      }, [tickerPoints, historyOffset]);
+
+      // 2. Animated Canvas Rendering Loop with Blinking/Pulsing Red Spikes (NO TEXT CALLOUT TAGS)
+      useEffect(() => {
+        let animId;
+
+        const drawCanvas = () => {
+          const canvas = tickerCanvasRef.current;
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          const width = canvas.width;
+          const height = canvas.height;
+
+          ctx.clearRect(0, 0, width, height);
+
+          const marginLeft = 65;
+          const marginRight = 24;
+          const marginTop = 30;
+          const marginBottom = 42;
+          const chartWidth = width - marginLeft - marginRight;
+          const chartHeight = height - marginTop - marginBottom;
+
+          // Subtle Gridlines & Y-Axis Labels
+          const yTicks = [
+            { val: 1.0, label: "100%" },
+            { val: 0.75, label: "75%" },
+            { val: 0.50, label: "50%" },
+            { val: 0.25, label: "25%" },
+            { val: 0.0, label: "0%" }
+          ];
+
+          yTicks.forEach(tick => {
+            const y = marginTop + (1.0 - tick.val) * chartHeight;
+
+            ctx.beginPath();
+            ctx.strokeStyle = tick.val === 0.0 ? '#CBD5E1' : '#F1F5F9';
+            ctx.lineWidth = tick.val === 0.0 ? 1.5 : 1;
+            ctx.setLineDash(tick.val === 0.0 ? [] : [4, 4]);
+            ctx.moveTo(marginLeft, y);
+            ctx.lineTo(width - marginRight, y);
+            ctx.stroke();
+
+            ctx.fillStyle = '#64748B';
+            ctx.font = '600 11px Inter, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(tick.label, marginLeft - 10, y + 4);
+          });
+          ctx.setLineDash([]);
+
+          // X-Axis Baseline
+          ctx.beginPath();
+          ctx.strokeStyle = '#CBD5E1';
+          ctx.lineWidth = 1.5;
+          ctx.moveTo(marginLeft, marginTop + chartHeight);
+          ctx.lineTo(width - marginRight, marginTop + chartHeight);
+          ctx.stroke();
+
+          // Calendar Dates along X-Axis
+          const dateTicks = ["Dec 21", "Dec 22", "Dec 23", "Dec 24", "Dec 25", "Dec 26", "Dec 27", "Dec 28", "Dec 29", "Dec 30"];
+          dateTicks.forEach((dt, idx) => {
+            const x = marginLeft + (idx / (dateTicks.length - 1)) * chartWidth;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#94A3B8';
+            ctx.lineWidth = 1;
+            ctx.moveTo(x, marginTop + chartHeight);
+            ctx.lineTo(x, marginTop + chartHeight + 5);
+            ctx.stroke();
+
+            ctx.fillStyle = '#64748B';
+            ctx.font = '500 11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(dt, x, marginTop + chartHeight + 20);
+          });
+
+          if (visiblePoints.length < 2) {
+            ctx.fillStyle = '#94A3B8';
+            ctx.font = '500 13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Initializing live telemetry stream...", width / 2, height / 2);
+            return;
+          }
+
+          const stepX = chartWidth / Math.max(20, visiblePoints.length - 1);
+
+          // Area Gradient Fill
+          ctx.beginPath();
+          visiblePoints.forEach((pt, i) => {
+            const x = marginLeft + i * stepX;
+            const y = marginTop + (1.0 - Math.min(1.0, Math.max(0, pt.val))) * chartHeight;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.lineTo(marginLeft + (visiblePoints.length - 1) * stepX, marginTop + chartHeight);
+          ctx.lineTo(marginLeft, marginTop + chartHeight);
+          ctx.closePath();
+
+          const grad = ctx.createLinearGradient(0, marginTop, 0, marginTop + chartHeight);
+          grad.addColorStop(0, 'rgba(22, 163, 74, 0.28)');
+          grad.addColorStop(0.7, 'rgba(22, 163, 74, 0.06)');
+          grad.addColorStop(1, 'rgba(22, 163, 74, 0.0)');
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // Main Trendline
+          ctx.beginPath();
+          ctx.strokeStyle = '#16A34A';
+          ctx.lineWidth = 2.5;
+          visiblePoints.forEach((pt, i) => {
+            const x = marginLeft + i * stepX;
+            const y = marginTop + (1.0 - Math.min(1.0, Math.max(0, pt.val))) * chartHeight;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+
+          // BLINKING / PULSING RED SPIKE DETECTORS (NO FLOATING TEXT TAGS)
+          const now = Date.now();
+          const pulsePhase = (now % 1000) / 1000; // 0 to 1
+          const pulseRadius = 7 + pulsePhase * 12;
+          const pulseAlpha = 0.7 * (1.0 - pulsePhase);
+
+          const redDots = [];
+          visiblePoints.forEach((pt, i) => {
+            if (pt.is_spike || pt.val >= 0.70) {
+              const x = marginLeft + i * stepX;
+              const y = marginTop + (1.0 - Math.min(1.0, Math.max(0, pt.val))) * chartHeight;
+
+              // Outer expanding blinking halo
+              ctx.beginPath();
+              ctx.arc(x, y, pulseRadius, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(220, 38, 38, ${pulseAlpha})`;
+              ctx.fill();
+
+              // Secondary glow ring
+              ctx.beginPath();
+              ctx.arc(x, y, 10, 0, Math.PI * 2);
+              ctx.fillStyle = 'rgba(220, 38, 38, 0.35)';
+              ctx.fill();
+
+              // Inner solid red dot
+              ctx.beginPath();
+              ctx.arc(x, y, 6.5, 0, Math.PI * 2);
+              ctx.fillStyle = '#DC2626';
+              ctx.fill();
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 2.5;
+              ctx.stroke();
+
+              redDots.push({ x, y, pt, ringIndex: i % 2 });
+            }
+          });
+          redDotsRef.current = redDots;
+        };
+
+        const loop = () => {
+          drawCanvas();
+          animId = requestAnimationFrame(loop);
+        };
+        animId = requestAnimationFrame(loop);
+
+        return () => cancelAnimationFrame(animId);
+      }, [visiblePoints]);
+
+      // 3. Handle Canvas Clicks on Red Peak Dots
+      const handleCanvasClick = (e) => {
+        const canvas = tickerCanvasRef.current;
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const clickX = (e.clientX - rect.left) * scaleX;
+        const clickY = (e.clientY - rect.top) * scaleY;
+
+        let hit = null;
+        let minDist = 30;
+        redDotsRef.current.forEach(dot => {
+          const dist = Math.hypot(dot.x - clickX, dot.y - clickY);
+          if (dist < minDist) {
+            minDist = dist;
+            hit = dot;
+          }
+        });
+
+        if (hit) {
+          const targetRingId = hit.ringIndex === 0 ? 'Ring 1' : 'Ring 2';
+          setSelectedRingId(targetRingId);
+          setShowAttackBanner(true);
+          setBannerDismissed(false);
+          setActionToast(`Focused on Attack Spike (Card #${hit.pt.card1}) • Switched to ${targetRingId}`);
+          setTimeout(() => setActionToast(null), 3500);
+
+          const el = document.getElementById('attack-intelligence');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+            el.classList.add('target-highlight');
+            setTimeout(() => el.classList.remove('target-highlight'), 1800);
+          }
+        }
+      };
+
+      const handleCanvasMouseMove = (e) => {
+        const canvas = tickerCanvasRef.current;
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mouseX = (e.clientX - rect.left) * scaleX;
+        const mouseY = (e.clientY - rect.top) * scaleY;
+
+        const isNear = redDotsRef.current.some(dot => Math.hypot(dot.x - mouseX, dot.y - mouseY) < 25);
+        canvas.style.cursor = isNear ? 'pointer' : 'default';
+      };
+
+      // Time-Travel Navigation Handlers (< and > buttons)
+      const goBackInTime = () => {
+        // Pause live broadcast so timeline is static and easy to click
+        if (isPlaying) {
+          setIsPlaying(false);
+          wsRef.current?.send(JSON.stringify({ command: "pause" }));
+        }
+        const maxOffset = Math.max(0, tickerPoints.length - 20);
+        setHistoryOffset(prev => Math.min(maxOffset, prev + 10));
+        setActionToast("⏸ Timeline static in Past mode — select any red spike easily");
+        setTimeout(() => setActionToast(null), 3000);
+      };
+
+      const goForwardInTime = () => {
+        setHistoryOffset(prev => {
+          const nextOffset = Math.max(0, prev - 10);
+          if (nextOffset === 0) {
+            // Reached present (live feed): unpause and resume stream at usual speed!
+            setIsPlaying(true);
+            wsRef.current?.send(JSON.stringify({ command: "play" }));
+            setActionToast("Returned to Present (Live Feed) — Stream Resumed");
+            setTimeout(() => setActionToast(null), 2500);
+          } else {
+            setActionToast(`Stepped forward in time (${nextOffset} pts behind)`);
+            setTimeout(() => setActionToast(null), 2000);
+          }
+          return nextOffset;
+        });
+      };
+
+      const jumpToPreviousSpike = () => {
+        if (isPlaying) {
+          setIsPlaying(false);
+          wsRef.current?.send(JSON.stringify({ command: "pause" }));
+        }
+        const currentEndIdx = tickerPoints.length - historyOffset;
+        let targetIdx = -1;
+        for (let i = currentEndIdx - 2; i >= 0; i--) {
+          if (tickerPoints[i].is_spike || tickerPoints[i].val >= 0.70) {
+            targetIdx = i;
+            break;
+          }
+        }
+        if (targetIdx !== -1) {
+          const newOffset = Math.max(0, tickerPoints.length - (targetIdx + 20));
+          setHistoryOffset(newOffset);
+          setActionToast(`Jumped to historical spike at TX #${tickerPoints[targetIdx].tx_id} (Static)`);
+          setTimeout(() => setActionToast(null), 3000);
+        } else {
+          setActionToast("No earlier spikes found in loaded history buffer");
+          setTimeout(() => setActionToast(null), 2500);
+        }
+      };
+
+      const returnToLive = () => {
+        setHistoryOffset(0);
+        setIsPlaying(true);
+        wsRef.current?.send(JSON.stringify({ command: "play" }));
+        setActionToast("Returned to Live Real-Time Feed at Usual Speed");
+        setTimeout(() => setActionToast(null), 2500);
+      };
+
+      // Playback Controls
+      const togglePlay = () => {
+        const nextState = !isPlaying;
+        setIsPlaying(nextState);
+        wsRef.current?.send(JSON.stringify({ command: nextState ? "play" : "pause" }));
+      };
+
+      const stepOnce = () => {
+        wsRef.current?.send(JSON.stringify({ command: "step" }));
+      };
+
+      const resetStream = () => {
+        setIsPlaying(false);
+        setHistoryOffset(0);
+        setShowAttackBanner(false);
+        setSelectedActor(null);
+        wsRef.current?.send(JSON.stringify({ command: "reset" }));
+      };
+
+      // Merchant Block Action (Diagnostic Simulation)
+      const handleBlockActor = (actorId) => {
+        const next = new Set(blockedActors);
+        if (next.has(actorId)) next.delete(actorId);
+        else next.add(actorId);
+        setBlockedActors(next);
+
+        setActionToast(`Action Logged: ${actorId} marked as ${next.has(actorId) ? 'BLOCKED' : 'UNBLOCKED'} (Diagnostic Simulation)`);
+        setTimeout(() => setActionToast(null), 3500);
+      };
+
+      // Subnav Navigation Anchors
+      const handleNavClick = (tabName, targetId) => {
+        setActiveNavTab(tabName);
+        if (targetId) {
+          const el = document.getElementById(targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+            el.classList.add('target-highlight');
+            setTimeout(() => el.classList.remove('target-highlight'), 1800);
+          }
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+
+      // Filtered Transactions
+      const filteredTransactions = useMemo(() => {
+        if (transactionFilter === 'DECLINED') return transactions.filter(t => t.action === 'DECLINE');
+        if (transactionFilter === 'REVIEW') return transactions.filter(t => t.action === 'STEP_UP_AUTH');
+        if (transactionFilter === 'APPROVED') return transactions.filter(t => t.action === 'APPROVE');
+        return transactions;
+      }, [transactions, transactionFilter]);
+
+      return (
+        <div className="min-h-screen flex flex-col font-sans">
+          
+          {/* 1. TOP NAVBAR (SOOTHING PASTEL PALETTE & ANIMATED BRAND TITLE) */}
+          <header className="bg-gradient-to-r from-slate-50/95 via-indigo-50/60 to-slate-50/95 backdrop-blur-xl border-b border-indigo-100/70 sticky top-0 z-40 shadow-[0_2px_15px_-3px_rgba(99,102,241,0.06)]">
+            {/* Soothing Gradient Accent Top Line */}
+            <div className="h-[2.5px] bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-600 w-full" />
+            
+            <div className="max-w-[1600px] mx-auto px-6 py-3.5 flex items-center justify-between">
+              
+              {/* Brand Logo & Name (Using user uploaded logo emblem) */}
+              <div className="flex items-center space-x-3.5">
+                <img 
+                  src="/static/logo.png" 
+                  alt="GraphVision Security Logo" 
+                  className="w-10 h-10 rounded-full border border-indigo-200/80 shadow-xs object-cover bg-white" 
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-lg font-extrabold tracking-tight gv-brand-title">
+                      GraphVision Security
+                    </h1>
+                  </div>
+                  <p className="text-xs text-slate-500 font-normal">
+                    Actor-Centric Entity Resolution & Syndicate Abuse Protection
+                  </p>
+                </div>
+              </div>
+
+              {/* Playback Controls & Connection Status */}
+              <div className="flex items-center space-x-3">
+                <button 
+                  onClick={togglePlay}
+                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-xs ${
+                    isPlaying 
+                      ? 'bg-amber-500 hover:bg-amber-600 text-white' 
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  }`}
+                >
+                  {isPlaying ? '⏸ Pause' : '▶ Play'}
+                </button>
+
+                <button 
+                  onClick={stepOnce} 
+                  disabled={isPlaying}
+                  className="px-3 py-2 bg-slate-100/90 hover:bg-slate-200 disabled:opacity-40 rounded-lg text-xs font-semibold text-slate-700 border border-slate-300/80 transition"
+                >
+                  ⏭ Step (1 TX)
+                </button>
+
+                <button 
+                  onClick={resetStream} 
+                  className="text-slate-400 hover:text-red-500 text-sm p-2 rounded-lg hover:bg-slate-100 transition" 
+                  title="Reset Stream"
+                >
+                  🔄
+                </button>
+
+                <div className="h-5 w-px bg-slate-200 mx-1" />
+
+                <div className="flex items-center gap-1.5 pl-1 text-xs font-medium text-slate-600">
+                  <span className={`w-2.5 h-2.5 rounded-full ${wsConnected ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-red-500'}`} />
+                  <span>{wsConnected ? 'Connected (Live)' : 'Disconnected'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Subnav Tabs (FUNCTIONAL NAVIGATION ANCHORS WITH SOOTHING AESTHETICS) */}
+            <div className="max-w-[1600px] mx-auto px-6 flex items-center space-x-6 border-t border-indigo-100/60 bg-white/40 backdrop-blur-xs text-xs font-medium text-slate-500">
+              {[
+                { name: 'Overview', target: null },
+                { name: 'Live Moving Ticker', target: 'live-ticker-section' },
+                { name: 'Fraud Analysis', target: 'stacked-risk-analysis' },
+                { name: 'Syndicate Forensics', target: 'attack-intelligence' },
+                { name: 'Stream Feed', target: 'stream-feed' }
+              ].map(tab => (
+                <button
+                  key={tab.name}
+                  onClick={() => handleNavClick(tab.name, tab.target)}
+                  className={`py-2.5 border-b-2 transition font-medium ${
+                    activeNavTab === tab.name 
+                      ? 'border-indigo-600 text-indigo-600 font-semibold' 
+                      : 'border-transparent hover:text-slate-900 hover:border-slate-300'
+                  }`}
+                >
+                  {tab.name}
+                </button>
+              ))}
+            </div>
+
+            {/* CRITICAL CHANGE: ATTACK BANNER IS NOW PLACED AT THE TOP OF THE WEBSITE RIGHT BELOW SUBNAV! */}
+            {showAttackBanner && selectedRing && !bannerDismissed && (
+              <div className="bg-red-50/95 backdrop-blur-xs border-y border-red-200 px-6 py-2.5 flex items-center justify-between text-xs text-red-900 shadow-xs transition animate-fadeIn">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3 h-3 rounded-full bg-red-600 attack-alert-pulse inline-block" />
+                  <span className="font-bold uppercase tracking-wide text-red-700">
+                    ⚡ FRAUD ATTACK DETECTED!
+                  </span>
+                  <span className="text-slate-700">
+                    Selected Syndicate: <span className="font-mono font-bold text-red-700">{selectedRing.ring_name}</span> • 
+                    Fraud Probability: <span className="font-bold text-red-600">{selectedRing.fraud_probability}%</span> • 
+                    Ring Probability: <span className="font-bold text-purple-700">{selectedRing.ring_probability}%</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => handleNavClick('Syndicate Forensics', 'attack-intelligence')}
+                    className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold text-[11px] shadow-xs transition"
+                  >
+                    Inspect Syndicate Network ➔
+                  </button>
+                  <button 
+                    onClick={() => setBannerDismissed(true)} 
+                    className="text-slate-400 hover:text-slate-600 text-base px-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
+          </header>
+
+          {/* 2. TOP KPI BAR: MATCHING 55% LEFT / 45% RIGHT RATIO */}
+          <div className="max-w-[1600px] w-full mx-auto px-6 pt-5 pb-1">
+            <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-6 items-start">
+              
+              {/* LEFT 55%: TWO COMPACT KPI CARDS */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Metric 1: Total Streamed */}
+                <div className="bg-white/95 backdrop-blur-xs border border-slate-200/80 p-3.5 rounded-xl shadow-xs text-center">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Total Transactions Streamed
+                  </span>
+                  <span className="text-2xl font-bold font-mono text-slate-900">
+                    {kpi.total_streamed.toLocaleString()}
+                  </span>
+                  <span className="text-[11px] text-slate-400 block mt-0.5">Chronological Replay</span>
+                </div>
+
+                {/* Metric 2: Live Anomaly Rate */}
+                <div className="bg-white/95 backdrop-blur-xs border border-slate-200/80 p-3.5 rounded-xl shadow-xs text-center">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                    Live Anomaly / Fraud Rate
+                  </span>
+                  <span className="text-2xl font-bold font-mono text-amber-600">
+                    {kpi.fraud_pct.toFixed(2)}%
+                  </span>
+                  <span className="text-[11px] text-slate-400 block mt-0.5">Sliding 5m Window</span>
+                </div>
+              </div>
+
+              {/* RIGHT 45%: RINGS ACTIVE BAR (EXACT WIDTH OF RIGHT PANEL, COLLAPSED BY DEFAULT) */}
+              <div className="bg-white/95 backdrop-blur-xs border border-indigo-200/80 p-3.5 rounded-xl shadow-xs transition">
+                <div 
+                  onClick={() => setShowRingSelector(!showRingSelector)} 
+                  className="flex items-center justify-between cursor-pointer select-none"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-sm border border-indigo-100">
+                      🛡️
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                          Ring Active
+                        </span>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-600 text-white font-mono font-bold">
+                          {activeRings.length || 2}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-500">
+                        {showRingSelector ? "Click to collapse ring list" : "Click to view syndicate ring list"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowRingSelector(!showRingSelector);
+                    }}
+                    className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg border border-indigo-200 transition flex items-center gap-1.5"
+                  >
+                    <span>Show Fraud Ring</span>
+                    <span className="text-[10px]">{showRingSelector ? '▲' : '▼'}</span>
+                  </button>
+                </div>
+
+                {/* Multiple vertical buttons (COLLAPSED BY DEFAULT) */}
+                {showRingSelector && (
+                  <div className="flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-100 animate-fadeIn">
+                    {activeRings.map((r) => (
+                      <button
+                        key={r.ring_id}
+                        onClick={() => {
+                          setSelectedRingId(r.ring_id);
+                          const el = document.getElementById('attack-intelligence');
+                          if (el) {
+                            el.scrollIntoView({ behavior: 'smooth' });
+                            el.classList.add('target-highlight');
+                            setTimeout(() => el.classList.remove('target-highlight'), 1800);
+                          }
+                        }}
+                        className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition flex items-center justify-between ${
+                          selectedRingId === r.ring_id
+                            ? 'bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-300'
+                            : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-sm">🕸️</span>
+                          <span className="font-bold">Show {r.ring_id}</span>
+                          <span className={`text-[11px] ${selectedRingId === r.ring_id ? 'text-indigo-100' : 'text-slate-500'}`}>
+                            ({r.ring_id})
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold ${
+                            selectedRingId === r.ring_id ? 'bg-indigo-700 text-white' : 'bg-white text-slate-600 border border-slate-200'
+                          }`}>
+                            {r.community.users} Users • {r.community.known_fraudsters} Fraudsters
+                          </span>
+                          <span className="text-xs">➔</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+          </div>
+
+          {/* NOTIFICATION TOAST */}
+          {actionToast && (
+            <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-xl border border-slate-700 animate-fadeIn">
+              {actionToast}
+            </div>
+          )}
+
+          {/* MAIN BODY DASHBOARD: EXACT 55% LEFT AND 45% RIGHT */}
+          <div className="flex-1 max-w-[1600px] w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-[55%_45%] gap-6">
+            
+            {/* LEFT COLUMN: EXACTLY 55% - GRAPHS & ANALYSIS */}
+            <div className="flex flex-col space-y-6">
+              
+              {/* 1. ENLARGED MOVING STOCK-MARKET LINE CHART WITH TIME-TRAVEL CONTROLS (< AND >) */}
+              <div id="live-ticker-section" className="bg-white/95 backdrop-blur-xs border border-slate-200/80 rounded-2xl p-5 shadow-xs transition">
+                
+                {/* Header with Time-Travel Controls (< and >) */}
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                      📈 Average Fraud Percentage & Velocity Dynamics
+                    </h2>
+                    <p className="text-xs text-slate-500">
+                      Blinking red dots indicate attack surges • Click any red dot to inspect syndicate forensics
+                    </p>
+                  </div>
+
+                  {/* TIME-TRAVEL CONTROLS (< AND > BUTTONS) WITH STATIC PAST FREEZE */}
+                  <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200/80 p-1.5 rounded-xl text-xs font-semibold">
+                    {historyOffset > 0 ? (
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded-lg">
+                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                        <span className="text-[10px] font-bold">PAST ({historyOffset} pts — Static)</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span className="text-[10px] font-bold">LIVE</span>
+                      </div>
+                    )}
+
+                    {/* < Past (Freezes stream and moves back) */}
+                    <button
+                      onClick={goBackInTime}
+                      className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded-lg border border-slate-200 shadow-xs flex items-center gap-1 transition font-semibold"
+                      title="Freeze stream & explore past spikes"
+                    >
+                      <span>◀</span>
+                      <span>Past</span>
+                    </button>
+
+                    {/* > Next */}
+                    <button
+                      onClick={goForwardInTime}
+                      disabled={isLive}
+                      className={`px-2.5 py-1 rounded-lg border transition flex items-center gap-1 ${
+                        isLive 
+                          ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-40' 
+                          : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 shadow-xs font-semibold'
+                      }`}
+                      title={isLive ? "Already at live feed" : "Step forward in time"}
+                    >
+                      <span>Next</span>
+                      <span>▶</span>
+                    </button>
+
+                    {/* Jump to Previous Spike */}
+                    <button
+                      onClick={jumpToPreviousSpike}
+                      className="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg border border-red-200 transition font-semibold flex items-center gap-1"
+                      title="Jump directly to previous red spike"
+                    >
+                      <span>⚡</span>
+                      <span>Prev Spike</span>
+                    </button>
+
+                    {/* Return to Present / Live Speed Button */}
+                    <button
+                      onClick={returnToLive}
+                      disabled={isLive}
+                      className={`px-3 py-1 rounded-lg border transition font-bold text-xs flex items-center gap-1.5 shadow-xs ${
+                        isLive
+                          ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-40'
+                          : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 animate-pulse cursor-pointer'
+                      }`}
+                      title="Return to present live feed at normal speed"
+                    >
+                      <span>●</span>
+                      <span>Present (Live)</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Status Badge */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    {isLive ? (
+                      <span className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 font-semibold text-[11px]">
+                        <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                        LIVE STREAM ACTIVE
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 font-bold text-[11px]">
+                        <span>⏳ VIEWING PAST WINDOW (T-{historyOffset})</span>
+                        <span className="text-amber-600 font-normal">• Click "Live ➔" to resume</span>
+                      </span>
+                    )}
+                  </div>
+
+                  <span className="text-[11px] font-mono text-slate-500 font-semibold">
+                    Window: {visiblePoints[0]?.date || 'Dec 21'} → {visiblePoints[visiblePoints.length - 1]?.date || 'Dec 22'}
+                  </span>
+                </div>
+
+                {/* Canvas with Clean Blinking Halos (NO TEXT TAGS) */}
+                <canvas 
+                  ref={tickerCanvasRef} 
+                  width={960} 
+                  height={270} 
+                  onClick={handleCanvasClick}
+                  onMouseMove={handleCanvasMouseMove}
+                  className="w-full h-64 md:h-72 rounded-xl bg-slate-50/70 border border-slate-200/80"
+                />
+
+                <div className="flex items-center justify-between text-[11px] text-slate-500 mt-3 pt-2 border-t border-slate-100 font-medium">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block" />
+                      <span>Live Normal Flow</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-full bg-red-600 inline-block animate-ping" />
+                      <span className="font-bold text-red-700">Attack Surge (Click dot to inspect)</span>
+                    </div>
+                  </div>
+                  <span className="text-slate-400">
+                    5m rolling window • Y-Axis: Risk Tier • X-Axis: Real Calendar Dates
+                  </span>
+                </div>
+              </div>
+
+              {/* 2. PIC 2 REFERENCE: 100% STACKED BAR CHART IN SPACE BELOW GRAPH */}
+              <div id="stacked-risk-analysis" className="bg-white/95 backdrop-blur-xs border border-slate-200/80 rounded-2xl p-5 shadow-xs transition">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Fraud Risk Tier Analysis by Date
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      100% Stacked volume of flagged transactions by risk tier (Temporal Risk Composition)
+                    </p>
+                  </div>
+
+                  {/* Pic 2 Legend */}
+                  <div className="flex items-center space-x-4 text-xs font-semibold">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-3.5 h-3.5 rounded-xs bg-[#2563EB] inline-block" />
+                      <span className="text-slate-700">HIGH RISK</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-3.5 h-3.5 rounded-xs bg-[#F59E0B] inline-block" />
+                      <span className="text-slate-700">MEDIUM RISK</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Stacked Bars Component (Exact match for Reference Pic 2) */}
+                <div className="relative pt-4 pb-2">
+                  <div className="h-44 w-full flex flex-col justify-between border-b border-slate-200 relative">
+                    <div className="border-b border-dashed border-slate-200 w-full flex justify-between items-center text-[10px] text-slate-400 font-medium">
+                      <span>100%</span>
+                    </div>
+                    <div className="border-b border-dashed border-slate-200 w-full flex justify-between items-center text-[10px] text-slate-400 font-medium">
+                      <span>50%</span>
+                    </div>
+                    <div className="w-full flex justify-between items-center text-[10px] text-slate-400 font-medium">
+                      <span>0%</span>
+                    </div>
+
+                    {/* Bars Container */}
+                    <div className="absolute inset-0 flex items-end justify-around px-6">
+                      {HISTORICAL_RISK_DATA.map((item) => (
+                        <div 
+                          key={item.date} 
+                          className="relative flex flex-col items-center group"
+                          onMouseEnter={() => setHoveredBar(item)}
+                          onMouseLeave={() => setHoveredBar(null)}
+                        >
+                          {/* Tooltip on Hover */}
+                          {hoveredBar?.date === item.date && (
+                            <div className="absolute -top-14 z-20 bg-slate-900 text-white text-[11px] p-2 rounded-lg shadow-lg pointer-events-none whitespace-nowrap animate-fadeIn">
+                              <div className="font-bold">{item.date} Breakdown</div>
+                              <div>High Risk: {item.highPct.toFixed(1)}% ({item.highCount} tx)</div>
+                              <div>Medium Risk: {item.medPct.toFixed(1)}% ({item.medCount} tx)</div>
+                            </div>
+                          )}
+
+                          {/* Stacked Bar Pillar */}
+                          <div className="w-10 md:w-12 h-36 flex flex-col justify-end rounded-xs overflow-hidden shadow-xs cursor-pointer transition hover:opacity-90">
+                            {/* Medium Risk (Amber top) */}
+                            {item.medPct > 0 && (
+                              <div 
+                                style={{ height: `${item.medPct}%` }}
+                                className="bg-[#F59E0B] w-full transition-all duration-300"
+                              />
+                            )}
+                            {/* High Risk (Blue bottom) */}
+                            {item.highPct > 0 && (
+                              <div 
+                                style={{ height: `${item.highPct}%` }}
+                                className="bg-[#2563EB] w-full transition-all duration-300"
+                              />
+                            )}
+                          </div>
+
+                          {/* Date Label on X-Axis */}
+                          <span className="text-[11px] text-slate-600 font-medium mt-2">
+                            {item.date}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. LIVE TRANSACTION STREAM FEED */}
+              <div id="stream-feed" className="bg-white/95 backdrop-blur-xs border border-slate-200/80 rounded-2xl p-5 shadow-xs flex-1 transition">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Live Transaction Feed ({transactions.length})
+                    </h3>
+                    <p className="text-xs text-slate-500">Real-time inference and policy action stream</p>
+                  </div>
+
+                  {/* Filter Pills */}
+                  <div className="flex items-center space-x-1.5 text-xs font-medium">
+                    {['ALL', 'DECLINED', 'REVIEW', 'APPROVED'].map((f) => (
+                      <button
+                        key={f}
+                        onClick={() => setTransactionFilter(f)}
+                        className={`px-2.5 py-1 rounded-lg transition ${
+                          transactionFilter === f 
+                            ? 'bg-slate-900 text-white font-semibold' 
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                        }`}
+                      >
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                  {filteredTransactions.map(tx => (
+                    <div 
+                      key={tx.TransactionID}
+                      className={`p-3 rounded-xl border transition flex items-center justify-between text-xs ${
+                        tx.action === 'DECLINE'
+                          ? 'bg-red-50/60 border-red-200'
+                          : tx.action === 'STEP_UP_AUTH'
+                          ? 'bg-amber-50/60 border-amber-200'
+                          : 'bg-white border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className={`w-2 h-2 rounded-full ${
+                          tx.action === 'DECLINE' ? 'bg-red-500' : tx.action === 'STEP_UP_AUTH' ? 'bg-amber-500' : 'bg-emerald-500'
+                        }`} />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-slate-900">Card #{tx.card1}</span>
+                            <span className="font-mono text-slate-400 text-[11px]">TX {tx.TransactionID}</span>
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-mono">
+                              {tx.ProductCD}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 mt-0.5">
+                            {tx.reasons?.[0] || 'Normal customer activity'}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="font-bold text-slate-900 font-mono block">
+                          ${tx.TransactionAmt.toFixed(2)}
+                        </span>
+                        <span className={`font-semibold text-[10px] px-2 py-0.5 rounded-full inline-block mt-0.5 ${
+                          tx.action === 'DECLINE' ? 'bg-red-100 text-red-700 border border-red-200' :
+                          tx.action === 'STEP_UP_AUTH' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                          'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        }`}>
+                          {tx.action === 'DECLINE' ? `Decline (${(tx.risk_score * 100).toFixed(0)}%)` : 
+                           tx.action === 'STEP_UP_AUTH' ? `Review (${(tx.risk_score * 100).toFixed(0)}%)` : 
+                           `Approve`}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: EXACTLY 41.7% (5 COLUMNS) - SYNDICATE FORENSICS & NETWORK VISUALIZER */}
+            <div id="attack-intelligence" className="flex flex-col space-y-6">
+              
+              <div className="bg-white/95 backdrop-blur-xs border border-slate-200/80 rounded-2xl p-5 shadow-xs transition">
+                
+                {/* Space Header with Ring Selector Tabs */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-lg">🛡️</span>
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900">
+                        Fraud Attack Intelligence Space
+                      </h2>
+                      <p className="text-[11px] text-slate-500">Coordinated Abuse Ring & Network Forensics</p>
+                    </div>
+                  </div>
+
+                  {/* Ring 1 vs Ring 2 Tabs */}
+                  <div className="flex items-center space-x-1.5">
+                    {activeRings.map(r => (
+                      <button
+                        key={r.ring_id}
+                        onClick={() => setSelectedRingId(r.ring_id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                          selectedRingId === r.ring_id
+                            ? 'bg-slate-900 text-white shadow-xs'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {r.ring_id}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedRing && (
+                  <div className="space-y-4">
+                    
+                    {/* 1. Main Probability Gauges */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-red-50/80 border border-red-200/90 p-3.5 rounded-xl">
+                        <span className="text-[11px] font-semibold uppercase text-red-800 tracking-wider block mb-1">
+                          Fraud Probability
+                        </span>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-3xl font-extrabold font-mono text-red-600">
+                            {selectedRing.fraud_probability}%
+                          </span>
+                          <span className="text-[11px] text-red-700 font-medium">Critical Threat</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-purple-50/80 border border-purple-200/90 p-3.5 rounded-xl shadow-2xs">
+                        <span className="text-[11px] font-semibold uppercase text-purple-800 tracking-wider block mb-1">
+                          Ring Probability
+                        </span>
+                        <div className="flex items-baseline justify-between gap-1.5">
+                          <span className="text-3xl font-extrabold font-mono text-purple-700">
+                            {selectedRing.ring_probability}%
+                          </span>
+                          <span className="text-[10px] text-purple-800 font-bold bg-purple-100/90 px-2 py-0.5 rounded-full border border-purple-200/80 flex items-center gap-1 shadow-2xs">
+                            <span>✨</span>
+                            <span>GraphVisionAI Verified</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 2. Community & Connections Metrics (Exact Format) */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Community Breakdown */}
+                      <div className="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-800 block mb-2">
+                          Community
+                        </span>
+                        <div className="space-y-1.5 text-xs font-mono">
+                          <div className="flex justify-between py-1 border-b border-slate-200/60 text-slate-700">
+                            <span className="font-sans font-medium text-slate-600">Users</span>
+                            <span className="font-bold text-slate-900">{selectedRing.community.users}</span>
+                          </div>
+                          <div className="flex justify-between py-1 border-b border-slate-200/60 text-slate-700">
+                            <span className="font-sans font-medium text-slate-600">Known fraudsters</span>
+                            <span className="font-bold text-red-600">{selectedRing.community.known_fraudsters}</span>
+                          </div>
+                          <div className="flex justify-between py-1 text-slate-700">
+                            <span className="font-sans font-medium text-slate-600">Flagged percentage</span>
+                            <span className="font-bold text-amber-600">{selectedRing.community.flagged_percentage}%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Connections Breakdown */}
+                      <div className="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-800 block mb-2">
+                          Connections
+                        </span>
+                        <div className="space-y-1.5 text-xs font-mono">
+                          <div className="flex justify-between py-1 border-b border-slate-200/60 text-slate-700">
+                            <span className="font-sans font-medium text-slate-600">Shared devices</span>
+                            <span className="font-bold text-slate-900">{selectedRing.connections.shared_devices}</span>
+                          </div>
+                          <div className="flex justify-between py-1 border-b border-slate-200/60 text-slate-700">
+                            <span className="font-sans font-medium text-slate-600">Shared cards</span>
+                            <span className="font-bold text-slate-900">{selectedRing.connections.shared_cards}</span>
+                          </div>
+                          <div className="flex justify-between py-1 text-slate-700">
+                            <span className="font-sans font-medium text-slate-600">Shared ID20</span>
+                            <span className="font-bold text-slate-900">{selectedRing.connections.shared_id20}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 3. RING SYNDICATE NETWORK VISUALIZATION (ATTRACTIVE, COLORFUL & POP-OUT CAPABLE) */}
+                    <div className="bg-slate-50/80 border border-slate-200/80 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2.5">
+                        <div>
+                          <span className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                            <span>🕸️</span>
+                            <span>Ring Syndicate Network ({selectedRing.ring_id})</span>
+                          </span>
+                          <span className="text-[11px] text-slate-500 font-medium block">
+                            Red = Repeated Fraudster • Purple = Device • Blue = Card • Emerald = ID20
+                          </span>
+                        </div>
+                        <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
+                          <span>Hover & click graph to enlarge ⛶</span>
+                        </span>
+                      </div>
+
+                      {/* SVG Canvas with Key to trigger distinct animations on ring switch - POPPABLE ON HOVER/CLICK */}
+                      <div 
+                        key={selectedRing.ring_id} 
+                        onClick={() => setIsNetworkModalOpen(true)}
+                        className={`group relative bg-white rounded-xl border border-slate-200 p-2 shadow-xs overflow-hidden cursor-pointer hover:border-indigo-400 hover:shadow-lg transition-all duration-200 ${
+                          selectedRing.ring_id === 'Ring 1' ? 'animate-ring1' : 'animate-ring2'
+                        }`}
+                        title="Click to pop out into enlarged fullscreen view"
+                      >
+                        {/* Hover Overlay Badge (appears smoothly on hover) */}
+                        <div className="absolute top-2.5 right-2.5 z-10 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-slate-900/85 text-white text-[11px] font-medium px-2.5 py-1 rounded-lg shadow-md flex items-center gap-1.5 pointer-events-none transform translate-y-1 group-hover:translate-y-0">
+                          <span>⛶</span>
+                          <span>Click to Enlarge</span>
+                        </div>
+                        <svg viewBox="0 0 680 340" className="w-full h-80">
+                          <defs>
+                            <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+                              <feGaussianBlur stdDeviation="3" result="blur" />
+                              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                          </defs>
+
+                          {/* Render Edges based on selected ring deterministic geometry */}
+                          {selectedRing.network.edges.map((edge, idx) => {
+                            const aIdx = selectedRing.actors.findIndex(a => a.actor_id === edge.source);
+                            const ancList = selectedRing.ring_id === 'Ring 1' ? RING1_ANCHORS : RING2_ANCHORS;
+                            const posList = selectedRing.ring_id === 'Ring 1' ? RING1_ACTOR_POS : RING2_ACTOR_POS;
+
+                            const anc = ancList.find(a => a.id === edge.target);
+                            const actorPos = posList[aIdx] || { x: 340, y: 170 };
+                            if (!anc) return null;
+
+                            const isFraudster = aIdx < selectedRing.community.known_fraudsters;
+
+                            return (
+                              <line
+                                key={idx}
+                                x1={actorPos.x}
+                                y1={actorPos.y}
+                                x2={anc.x}
+                                y2={anc.y}
+                                stroke={isFraudster ? '#F87171' : '#CBD5E1'}
+                                strokeWidth={isFraudster ? 1.8 : 1}
+                                strokeDasharray={isFraudster ? "none" : "2,2"}
+                                opacity={isFraudster ? 0.85 : 0.55}
+                              />
+                            );
+                          })}
+
+                          {/* Render Central Anchors */}
+                          {(selectedRing.ring_id === 'Ring 1' ? RING1_ANCHORS : RING2_ANCHORS).map((anc) => (
+                            <g key={anc.id} transform={`translate(${anc.x}, ${anc.y})`}>
+                              <rect 
+                                x="-52" y="-12" width="104" height="24" rx="12" 
+                                fill={anc.color} 
+                                opacity="0.95" 
+                                className="shadow-xs"
+                              />
+                              <text 
+                                textAnchor="middle" y="4" 
+                                fill="#FFFFFF" 
+                                fontSize="9" 
+                                fontWeight="600"
+                                fontFamily="Inter, sans-serif"
+                              >
+                                {anc.label}
+                              </text>
+                            </g>
+                          ))}
+
+                          {/* Render Orbiting Actor Nodes with Fixed, Non-Jumping Halos */}
+                          {selectedRing.actors.map((actor, idx) => {
+                            const posList = selectedRing.ring_id === 'Ring 1' ? RING1_ACTOR_POS : RING2_ACTOR_POS;
+                            const pos = posList[idx] || { x: 340, y: 170 };
+                            const isFraud = actor.is_repeated_fraudster;
+                            const isSelected = selectedActor?.actor_id === actor.actor_id;
+
+                            return (
+                              <g 
+                                key={actor.actor_id} 
+                                transform={`translate(${pos.x}, ${pos.y})`}
+                                onClick={() => setSelectedActor(actor)}
+                                className="cursor-pointer"
+                              >
+                                {isFraud && (
+                                  <circle cx="0" cy="0" r="14" fill="#DC2626" opacity="0.25" className="animate-pulse" />
+                                )}
+
+                                <circle 
+                                  cx="0" cy="0"
+                                  r={isFraud ? 10 : 7.5} 
+                                  fill={isFraud ? '#DC2626' : '#94A3B8'} 
+                                  stroke={isSelected ? '#4F46E5' : '#FFFFFF'} 
+                                  strokeWidth={isSelected ? 3 : 2}
+                                />
+
+                                {isFraud && (
+                                  <text textAnchor="middle" y="3.5" fill="#FFFFFF" fontSize="8" fontWeight="800">
+                                    !
+                                  </text>
+                                )}
+
+                                <text 
+                                  textAnchor="middle" 
+                                  y={isFraud ? 19 : 16} 
+                                  fill={isFraud ? '#DC2626' : '#64748B'} 
+                                  fontSize="8.5" 
+                                  fontWeight="600"
+                                  fontFamily="Inter, sans-serif"
+                                >
+                                  {actor.actor_id}
+                                </text>
+                              </g>
+                            );
+                          })}
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* 4. Syndicate Users List (Clean Actor IDs, Repeated in RED) */}
+                    <div className="border-t border-slate-100 pt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                          Syndicate Members ({selectedRing.actors.length} Entities)
+                        </span>
+                        <span className="text-[11px] text-slate-500">Click any user to inspect forensics</span>
+                      </div>
+
+                      <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                        {selectedRing.actors.map((actor) => {
+                          const isBlocked = blockedActors.has(actor.actor_id);
+                          return (
+                            <div 
+                              key={actor.actor_id}
+                              onClick={() => setSelectedActor(actor)}
+                              className={`p-2.5 rounded-xl border transition cursor-pointer text-xs ${
+                                actor.is_repeated_fraudster 
+                                  ? 'bg-red-50/70 border-red-200 hover:border-red-300' 
+                                  : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                              } ${selectedActor?.actor_id === actor.actor_id ? 'ring-2 ring-indigo-500 shadow-xs' : ''}`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <span className={`font-mono text-xs font-bold ${
+                                  actor.is_repeated_fraudster ? 'text-red-700' : 'text-slate-800'
+                                }`}>
+                                  {actor.actor_id}
+                                </span>
+
+                                <div className="flex items-center gap-1.5">
+                                  {actor.is_repeated_fraudster ? (
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-600 text-white shadow-xs">
+                                      🚨 REPEATED FRAUDSTER
+                                    </span>
+                                  ) : (
+                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                                      Connected Mule
+                                    </span>
+                                  )}
+                                  {isBlocked && (
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900 text-white">
+                                      BLOCKED
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="flex justify-between text-[11px] text-slate-500">
+                                <span>In Fraud Chain: <strong className={actor.is_repeated_fraudster ? "text-red-700" : "text-slate-700"}>{actor.fraud_chain_count} times</strong></span>
+                                <span className="font-mono">${actor.total_amt.toFixed(2)} ({actor.total_tx} tx)</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* 5. User Details Section with Fraud Chain Count & Merchant Block Button */}
+                    {selectedActor && (
+                      <div className="bg-indigo-50/90 border border-indigo-200/90 p-4 rounded-xl text-xs space-y-2.5 animate-fadeIn">
+                        <div className="flex justify-between items-center font-bold text-slate-900 border-b border-indigo-200/60 pb-2">
+                          <span className="text-sm font-bold text-indigo-950">
+                            User Forensics: {selectedActor.actor_id}
+                          </span>
+                          <button onClick={() => setSelectedActor(null)} className="text-slate-400 hover:text-slate-700 text-sm">✕</button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-slate-700 pt-1">
+                          <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+                            <span className="text-slate-400 text-[10px] font-medium block">Actor Identifier:</span>
+                            <span className="font-bold font-mono text-slate-900">{selectedActor.actor_id}</span>
+                          </div>
+
+                          <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+                            <span className="text-slate-400 text-[10px] font-medium block">Fraud Chain History:</span>
+                            <span className={`font-bold ${selectedActor.is_repeated_fraudster ? 'text-red-600' : 'text-slate-900'}`}>
+                              Found in Fraud Chain {selectedActor.fraud_chain_count} times
+                            </span>
+                          </div>
+
+                          <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+                            <span className="text-slate-400 text-[10px] font-medium block">Primary Card:</span>
+                            <span className="font-semibold text-slate-900">Card #{selectedActor.card1}</span>
+                          </div>
+
+                          <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+                            <span className="text-slate-400 text-[10px] font-medium block">Hardware Device:</span>
+                            <span className="font-semibold text-slate-900 truncate block">{selectedActor.device}</span>
+                          </div>
+
+                          <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+                            <span className="text-slate-400 text-[10px] font-medium block">Risk Score:</span>
+                            <span className="font-bold text-red-600">{(selectedActor.risk_score * 100).toFixed(0)}%</span>
+                          </div>
+
+                          <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+                            <span className="text-slate-400 text-[10px] font-medium block">Total Transacted:</span>
+                            <span className="font-bold font-mono text-slate-900">${selectedActor.total_amt.toFixed(2)}</span>
+                          </div>
+                        </div>
+
+                        {/* MERCHANT BLOCK ACTION BUTTON (DIAGNOSTIC SIMULATION) */}
+                        <div className="pt-2 flex items-center justify-between border-t border-indigo-200/60">
+                          <span className="text-[11px] text-slate-500 italic">
+                            Diagnostic mode: Action logged to merchant audit trail.
+                          </span>
+
+                          <button
+                            onClick={() => handleBlockActor(selectedActor.actor_id)}
+                            className={`px-3.5 py-1.5 rounded-lg font-semibold text-xs shadow-xs transition flex items-center gap-1.5 ${
+                              blockedActors.has(selectedActor.actor_id)
+                                ? 'bg-slate-800 text-white hover:bg-slate-700'
+                                : 'bg-red-600 text-white hover:bg-red-700'
+                            }`}
+                          >
+                            <span>🛑</span>
+                            <span>{blockedActors.has(selectedActor.actor_id) ? 'Unblock Actor' : 'Block Actor'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* 6. HIGH-RESOLUTION POP-OUT MODAL FOR ENLARGED NETWORK TOPOLOGY */}
+          {isNetworkModalOpen && selectedRing && (
+            <div 
+              onClick={(e) => { if (e.target === e.currentTarget) setIsNetworkModalOpen(false); }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/75 backdrop-blur-sm p-4 animate-fadeIn"
+            >
+              <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden">
+                
+                {/* Modal Header */}
+                <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/90">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl shadow-xs">
+                      🕸️
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <span>Syndicate Ring Network Topology — {selectedRing.ring_id}</span>
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 font-bold border border-red-200">
+                          {selectedRing.fraud_probability}% Fraud Threat
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-500">
+                        {selectedRing.community.users} Users • {selectedRing.community.known_fraudsters} Confirmed Fraudsters • {selectedRing.connections.shared_devices} Shared Devices • {selectedRing.connections.shared_cards} Shared Cards
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={() => setIsNetworkModalOpen(false)}
+                      className="w-8 h-8 rounded-lg bg-slate-200/80 hover:bg-slate-300 text-slate-700 font-bold flex items-center justify-center text-sm transition"
+                      title="Close modal (Esc)"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Body with Large High-Resolution Canvas */}
+                <div className="p-6 overflow-auto flex-1 bg-gradient-to-b from-slate-50/50 via-white to-slate-50/30 flex flex-col items-center">
+                  <div className="w-full bg-white rounded-xl border border-slate-200 p-4 shadow-sm relative overflow-hidden">
+                    <svg viewBox="0 0 720 360" className="w-full h-[420px]">
+                      {/* Connection Lines */}
+                      {selectedRing.network.edges.map((edge, idx) => {
+                        const aIdx = selectedRing.actors.findIndex(a => a.actor_id === edge.source);
+                        const ancList = selectedRing.ring_id === 'Ring 1' ? RING1_ANCHORS : RING2_ANCHORS;
+                        const posList = selectedRing.ring_id === 'Ring 1' ? RING1_ACTOR_POS : RING2_ACTOR_POS;
+                        const anc = ancList.find(a => a.id === edge.target);
+                        const actorPos = posList[aIdx] || { x: 360, y: 180 };
+                        if (!anc) return null;
+                        const isFraudster = aIdx < selectedRing.community.known_fraudsters;
+
+                        return (
+                          <line
+                            key={idx}
+                            x1={actorPos.x}
+                            y1={actorPos.y}
+                            x2={anc.x}
+                            y2={anc.y}
+                            stroke={isFraudster ? '#EF4444' : '#94A3B8'}
+                            strokeWidth={isFraudster ? 2.5 : 1.2}
+                            strokeDasharray={isFraudster ? "none" : "3,3"}
+                            opacity={isFraudster ? 0.9 : 0.6}
+                          />
+                        );
+                      })}
+
+                      {/* Central Shared Hardware & Card Anchors */}
+                      {(selectedRing.ring_id === 'Ring 1' ? RING1_ANCHORS : RING2_ANCHORS).map((anc) => (
+                        <g key={anc.id} transform={`translate(${anc.x}, ${anc.y})`}>
+                          <rect 
+                            x="-62" y="-14" width="124" height="28" rx="14" 
+                            fill={anc.color} 
+                            opacity="0.95" 
+                            className="shadow-sm"
+                          />
+                          <text 
+                            textAnchor="middle" y="4.5" 
+                            fill="#FFFFFF" 
+                            fontSize="10" 
+                            fontWeight="700"
+                            fontFamily="Inter, sans-serif"
+                          >
+                            {anc.label}
+                          </text>
+                        </g>
+                      ))}
+
+                      {/* Orbiting Actor Nodes */}
+                      {selectedRing.actors.map((actor, idx) => {
+                        const posList = selectedRing.ring_id === 'Ring 1' ? RING1_ACTOR_POS : RING2_ACTOR_POS;
+                        const pos = posList[idx] || { x: 360, y: 180 };
+                        const isFraud = actor.is_repeated_fraudster;
+                        const isSelected = selectedActor?.actor_id === actor.actor_id;
+
+                        return (
+                          <g 
+                            key={actor.actor_id} 
+                            transform={`translate(${pos.x}, ${pos.y})`}
+                            onClick={() => setSelectedActor(actor)}
+                            className="cursor-pointer"
+                          >
+                            {isFraud && (
+                              <circle cx="0" cy="0" r="18" fill="#DC2626" opacity="0.3" className="animate-pulse" />
+                            )}
+                            <circle 
+                              cx="0" cy="0"
+                              r={isFraud ? 12 : 9} 
+                              fill={isFraud ? '#DC2626' : '#6366F1'} 
+                              stroke={isSelected ? '#FBBF24' : '#FFFFFF'} 
+                              strokeWidth={isSelected ? 4 : 2.5}
+                            />
+                            {isFraud && (
+                              <text textAnchor="middle" y="4" fill="#FFFFFF" fontSize="9" fontWeight="900">
+                                !
+                              </text>
+                            )}
+                            <text 
+                              textAnchor="middle" 
+                              y={isFraud ? 22 : 19} 
+                              fill={isFraud ? '#DC2626' : '#475569'} 
+                              fontSize="9.5" 
+                              fontWeight="700"
+                              fontFamily="Inter, sans-serif"
+                            >
+                              {actor.actor_id}
+                            </text>
+                          </g>
+                        );
+                      })}
+                    </svg>
+                  </div>
+
+                  {/* Selected Actor Details Strip inside Modal */}
+                  {selectedActor && (
+                    <div className="w-full mt-4 p-4 bg-indigo-50/90 border border-indigo-200 rounded-xl flex items-center justify-between text-xs animate-fadeIn shadow-xs">
+                      <div className="flex items-center gap-5">
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Selected Actor:</span>
+                          <span className="font-bold text-sm text-indigo-950 font-mono">{selectedActor.actor_id}</span>
+                        </div>
+                        <div className={`px-2.5 py-1 rounded-md font-bold ${selectedActor.is_repeated_fraudster ? 'bg-red-100 text-red-700' : 'bg-indigo-100 text-indigo-700'}`}>
+                          {selectedActor.is_repeated_fraudster ? '⚠️ Repeated Fraudster' : 'Connected Mule'}
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Primary Card:</span>
+                          <span className="font-semibold text-slate-800">#{selectedActor.card1}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">GNN Risk:</span>
+                          <span className="font-bold text-red-600">{(selectedActor.risk_score * 100).toFixed(0)}%</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Fraud Chain History:</span>
+                          <span className="font-bold text-slate-800">{selectedActor.fraud_chain_count} times</span>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => handleBlockActor(selectedActor.actor_id)}
+                        className={`px-3.5 py-1.5 rounded-lg font-semibold text-xs shadow-xs transition flex items-center gap-1.5 ${
+                          blockedActors.has(selectedActor.actor_id)
+                            ? 'bg-slate-800 text-white'
+                            : 'bg-red-600 text-white hover:bg-red-700'
+                        }`}
+                      >
+                        <span>🛑</span>
+                        <span>{blockedActors.has(selectedActor.actor_id) ? 'Unblock Actor' : 'Block Actor'}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
