@@ -1,0 +1,23 @@
+# Datasets (1.4 GB CSV files - causes git index corruption if scanned)
+ieee-fraud-detection/
+*.zip
+*.csv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+dist/
+
+# Large Model Weights
+*.pt
+*.pth
+*.bin
+
